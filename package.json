@@ -1,14 +1,27 @@
 {
-  "name": "webscrapping-tesouro-direto",
+  "name": "br-fixed-income-simulator",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
+  "license": "MIT",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "server": "nodemon babel-node --inspect ./server.js"
   },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
+    "@babel/core": "7.14.6",
+    "@babel/plugin-proposal-optional-chaining": "7.14.5",
+    "@babel/preset-env": "7.14.7",
+    "eslint": "7.30.0",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-prettier": "3.4.0",
+    "jest": "27.0.6",
+    "jest-puppeteer": "5.0.4",
+    "nodemon": "2.0.9",
+    "prettier": "2.3.2",
     "puppeteer": "10.1.0"
+  },
+  "dependencies": {
+    "cors": "2.8.5",
+    "express": "4.17.1"
   }
 }
