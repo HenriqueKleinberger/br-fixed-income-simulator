@@ -1,4 +1,5 @@
 export const URL = "https://www.tesourodireto.com.br/titulos/calculadora.htm";
+export const BRL_CURRENCY = "R$";
 
 export const INPUT_TREASURE_TYPE = "#titulos-calc";
 export const INPUT_INVESTMENT_DATE = "#dataInvestimento";
