@@ -43,11 +43,7 @@ export const getFixedIncomeDataFromURL = async ({
   earningRateWithdraw,
 }) => {
   if (!code) throw { message: "Treasure code is required", statusCode: 400 };
-  const browser = await puppeteer.launch({
-    headless: false,
-    defaultViewport: null,
-    slowMo: 100,
-  });
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(URL);
   await page.select(INPUT_TREASURE_TYPE, code);
