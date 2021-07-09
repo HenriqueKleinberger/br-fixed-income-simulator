@@ -2,20 +2,18 @@ import { getFixedIncomeDataFromURL } from "../Services/FixedIncomeService.js";
 
 class FixedIncomeController {
   async get(request, response) {
-    const {
-      body: { code, value },
-    } = request;
-    const result = await getFixedIncomeDataFromURL({ code, value });
+    const { body } = request;
+    const result = await getFixedIncomeDataFromURL(body);
     return response.json(result);
   }
 
   async compare(request, response) {
     const {
-      body: { codes, value },
+      body: { codes, ...values },
     } = request;
     const treasuries = await Promise.all(
       codes.map(
-        async (code) => await getFixedIncomeDataFromURL({ code, value })
+        async (code) => await getFixedIncomeDataFromURL(code, ...values)
       )
     );
 

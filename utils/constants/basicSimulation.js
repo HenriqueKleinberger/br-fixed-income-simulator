@@ -1,5 +1,4 @@
 export const URL = "https://www.tesourodireto.com.br/titulos/calculadora.htm";
-export const BRL_CURRENCY = "R$";
 
 export const INPUT_TREASURE_TYPE = "#titulos-calc";
 export const INPUT_INVESTMENT_DATE = "#dataInvestimento";
@@ -7,6 +6,12 @@ export const INPUT_INVESTED_VALUE = "#valorInvestido";
 export const INPUT_EARNING_RATE = "#taxaRentabilidadeInvestimento";
 export const INPUT_BANK_ADMIN_RATE = "#taxaAdmBancoCorretora";
 export const INPUT_SELIC_RATE = "#indexadorTituloSelic";
+export const INPUT_IPCA_RATE = "#indexadorTituloIPCA";
+export const BUTTON_ADVANCED_SIMULATION_CLASS = ".td-calc-form__arrow";
+
+export const INPUT_WITHDRAW_DATE = "#dataVenda";
+export const INPUT_EARNING_RATE_WITHDRAW = "#taxaPapelVenda";
+
 export const BUTTON_CALCULATE = "#btnCalc";
 
 export const DATA_ROW_CLASS = ".td-calc-table__titulos__row td";

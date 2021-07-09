@@ -2,7 +2,6 @@ import puppeteer from "puppeteer";
 import delay from "../utils/delay.js";
 import {
   URL,
-  BRL_CURRENCY,
   INPUT_TREASURE_TYPE,
   INPUT_INVESTMENT_DATE,
   INPUT_INVESTED_VALUE,
@@ -16,7 +15,13 @@ import {
   LABEL_TAX,
   LABEL_NET_VALUE,
   LABEL_NET_VALUE_AFTER_TAXES,
-} from "../utils/constants.js";
+  INPUT_IPCA_RATE,
+  BUTTON_ADVANCED_SIMULATION_CLASS,
+  INPUT_EARNING_RATE_WITHDRAW,
+  INPUT_WITHDRAW_DATE,
+} from "../utils/constants/basicSimulation.js";
+import { BRL_CURRENCY } from "../utils/constants/currencies.js";
+import { SELIC, IPCA } from "../utils/constants/treasuryCodes.js";
 
 const getValueFromList = (list, label) =>
   list[list.findIndex((v) => v === label) + 1];
@@ -26,24 +31,63 @@ const parseCurrency = (c) =>
     c.replace(BRL_CURRENCY, "").split(".").join("").split(",").join(".")
   );
 
-export const getFixedIncomeDataFromURL = async ({ code, value }) => {
+export const getFixedIncomeDataFromURL = async ({
+  code,
+  value,
+  earningRate,
+  ipcaSelic,
+  withdrawDate,
+  earningRateWithdraw,
+}) => {
   if (!code) throw { message: "Treasure code is required", statusCode: 400 };
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    headless: false,
+    defaultViewport: null,
+  });
   const page = await browser.newPage();
   await page.goto(URL);
   await page.select(INPUT_TREASURE_TYPE, code);
-  await page.$eval(INPUT_INVESTMENT_DATE, (el) => (el.value = "02/07/2021"));
+  await page.$eval(
+    INPUT_INVESTMENT_DATE,
+    (el) => (el.value = Intl.DateTimeFormat("pt-BR").format(new Date()))
+  );
   await page.$eval(
     INPUT_INVESTED_VALUE,
     (el, value) => (el.value = value),
     value
   );
-  await page.$eval(INPUT_EARNING_RATE, (el) => (el.value = "8,75"));
+  await page.$eval(
+    INPUT_EARNING_RATE,
+    (el, value) => (el.value = value),
+    earningRate
+  );
   await page.$eval(INPUT_BANK_ADMIN_RATE, (el) => (el.value = "0"));
-  await page.$eval(INPUT_SELIC_RATE, (el) => (el.value = "5"));
+  if (SELIC.includes(code))
+    await page.$eval(
+      INPUT_SELIC_RATE,
+      (el, value) => (el.value = value),
+      ipcaSelic
+    );
+  if (IPCA.includes(code))
+    await page.$eval(
+      INPUT_IPCA_RATE,
+      (el, value) => (el.value = value),
+      ipcaSelic
+    );
+  await page.$eval(BUTTON_ADVANCED_SIMULATION_CLASS, (span) => span.click());
+  await page.$eval(
+    INPUT_WITHDRAW_DATE,
+    (el, value) => (el.value = value),
+    withdrawDate
+  );
+  await page.$eval(
+    INPUT_EARNING_RATE_WITHDRAW,
+    (el, value) => (el.value = value),
+    earningRateWithdraw
+  );
+
   await page.$eval(BUTTON_CALCULATE, (btn) => btn.click());
   await delay(300);
-
   const values = await page.evaluate((DATA_ROW_CLASS) => {
     const tds = Array.from(document.querySelectorAll(DATA_ROW_CLASS));
     return tds.map((td) => td.textContent);
