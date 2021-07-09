@@ -21,5 +21,6 @@ export const LABEL_DAYS_BETWEEN_INVESTMENT_WITHDRAW =
 export const LABEL_TAX_ALIQUOT = "Alíquota média de imposto de renda";
 export const LABEL_TAX = "Imposto de Renda";
 export const LABEL_NET_VALUE = "Valor líquido do resgate";
+export const LABEL_NET_VALUE_CUPOM = "Soma dos valores líquidos cupom";
 export const LABEL_NET_VALUE_AFTER_TAXES =
   "Rentabilidade líquida após taxas e I.R.";

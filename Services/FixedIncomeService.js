@@ -19,12 +19,15 @@ import {
   BUTTON_ADVANCED_SIMULATION_CLASS,
   INPUT_EARNING_RATE_WITHDRAW,
   INPUT_WITHDRAW_DATE,
+  LABEL_NET_VALUE_CUPOM,
 } from "../utils/constants/basicSimulation.js";
 import { BRL_CURRENCY } from "../utils/constants/currencies.js";
 import { SELIC, IPCA } from "../utils/constants/treasuryCodes.js";
 
-const getValueFromList = (list, label) =>
-  list[list.findIndex((v) => v === label) + 1];
+const getValueFromList = (list, label) => {
+  const index = list.findIndex((v) => v === label);
+  return index >= 0 && list[list.findIndex((v) => v === label) + 1];
+};
 
 const parseCurrency = (c) =>
   parseFloat(
@@ -40,7 +43,11 @@ export const getFixedIncomeDataFromURL = async ({
   earningRateWithdraw,
 }) => {
   if (!code) throw { message: "Treasure code is required", statusCode: 400 };
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    headless: false,
+    defaultViewport: null,
+    slowMo: 100,
+  });
   const page = await browser.newPage();
   await page.goto(URL);
   await page.select(INPUT_TREASURE_TYPE, code);
@@ -84,7 +91,7 @@ export const getFixedIncomeDataFromURL = async ({
   );
 
   await page.$eval(BUTTON_CALCULATE, (btn) => btn.click());
-  await delay(300);
+  await delay(1000);
   const values = await page.evaluate((DATA_ROW_CLASS) => {
     const tds = Array.from(document.querySelectorAll(DATA_ROW_CLASS));
     return tds.map((td) => td.textContent);
@@ -96,7 +103,10 @@ export const getFixedIncomeDataFromURL = async ({
   );
   const taxAliquot = getValueFromList(values, LABEL_TAX_ALIQUOT);
   const tax = getValueFromList(values, LABEL_TAX);
-  const netValue = parseCurrency(getValueFromList(values, LABEL_NET_VALUE));
+  const netValue = parseCurrency(
+    getValueFromList(values, LABEL_NET_VALUE) ||
+      getValueFromList(values, LABEL_NET_VALUE_CUPOM)
+  );
   const netValueAfterTaxes = getValueFromList(
     values,
     LABEL_NET_VALUE_AFTER_TAXES
