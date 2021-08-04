@@ -38,6 +38,7 @@ export const getFixedIncomeDataFromURL = async ({
   code,
   value,
   earningRate,
+  investmentDate,
   ipcaSelic,
   withdrawDate,
   earningRateWithdraw,
@@ -49,7 +50,9 @@ export const getFixedIncomeDataFromURL = async ({
   await page.select(INPUT_TREASURE_TYPE, code);
   await page.$eval(
     INPUT_INVESTMENT_DATE,
-    (el) => (el.value = Intl.DateTimeFormat("pt-BR").format(new Date()))
+    (el, value) =>
+      (el.value = value || Intl.DateTimeFormat("pt-BR").format(new Date())),
+    investmentDate
   );
   await page.$eval(
     INPUT_INVESTED_VALUE,
